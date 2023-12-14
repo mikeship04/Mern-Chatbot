@@ -29,7 +29,7 @@ export const userSignup = async (req, res, next) => {
         res.cookie(COOKIE_NAME, token, { ...COOKIE_PARAMS,
             expires
         });
-        return res.status(201).json({ message: "OK", id: user._id.toString() });
+        return res.status(201).json({ message: "OK", name: user.name, email: user.email });
     }
     catch (error) {
         console.log(error);
@@ -52,11 +52,23 @@ export const userLogin = async (req, res, next) => {
         res.cookie(COOKIE_NAME, token, { ...COOKIE_PARAMS,
             expires
         });
-        res.status(200).json({ message: "OK", id: user._id.toString() });
+        res.status(200).json({ message: "OK", name: user.name, email: user.email });
     }
     catch (error) {
         console.log(error);
         return res.status(400).json({ message: "ERROR", cause: error.message });
+    }
+};
+export const verifyUser = async (req, res, next) => {
+    try {
+        const user = await User.findById(res.locals.jwtData.id);
+        if (!user)
+            return res.status(401).send('User not registered');
+        if (user._id.toString() !== res.locals.jwtData.id)
+            return res.status(401).send('permissions did not match');
+        return res.status(200).json({ message: 'OK' });
+    }
+    catch (error) {
     }
 };
 //# sourceMappingURL=user-controller.js.map

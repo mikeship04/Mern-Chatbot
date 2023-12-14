@@ -44,7 +44,7 @@ export const userSignup = async (
       }
     )
 
-    return res.status(201).json({ message: "OK", id: user._id.toString() })
+    return res.status(201).json({ message: "OK", name: user.name, email: user.email })
   } catch (error) {
     console.log(error)
     return res.status(400).json({ message: "ERROR", cause: error.message })
@@ -75,10 +75,26 @@ export const userLogin = async (
         expires
       }
     )
-    res.status(200).json({ message: "OK", id: user._id.toString() })
+    res.status(200).json({ message: "OK", name:user.name, email:user.email })
 
   } catch (error) {
     console.log(error)
     return res.status(400).json({ message: "ERROR", cause: error.message })
+  }
+}
+
+export const verifyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await User.findById(res.locals.jwtData.id)
+    if(!user) return res.status(401).send('User not registered')
+    if(user._id.toString()!==res.locals.jwtData.id) return res.status(401).send('permissions did not match')
+
+    return res.status(200).json({message: 'OK'})
+  } catch (error) {
+    
   }
 }
