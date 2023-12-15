@@ -1,15 +1,14 @@
 import User from "../models/User.js";
 import { hash, compare } from "bcrypt";
 import { createToken } from "../utils/token-manager.js";
-import { COOKIE_NAME, COOKIE_PARAMS } from "../utils/constants.js";
+import { COOKIE_NAME, COOKIE_PARAMS, LogError } from "../utils/constants.js";
 export const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
         return res.status(200).json({ message: "OK", users });
     }
     catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: "ERROR", cause: error.message });
+        LogError(res, error);
     }
 };
 export const userSignup = async (req, res, next) => {
@@ -32,8 +31,7 @@ export const userSignup = async (req, res, next) => {
         return res.status(201).json({ message: "OK", name: user.name, email: user.email });
     }
     catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: "ERROR", cause: error.message });
+        LogError(res, error);
     }
 };
 export const userLogin = async (req, res, next) => {
@@ -55,20 +53,21 @@ export const userLogin = async (req, res, next) => {
         res.status(200).json({ message: "OK", name: user.name, email: user.email });
     }
     catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: "ERROR", cause: error.message });
+        LogError(res, error);
     }
 };
 export const verifyUser = async (req, res, next) => {
     try {
         const user = await User.findById(res.locals.jwtData.id);
+        console.log(user);
         if (!user)
             return res.status(401).send('User not registered');
         if (user._id.toString() !== res.locals.jwtData.id)
             return res.status(401).send('permissions did not match');
-        return res.status(200).json({ message: 'OK' });
+        return res.status(200).json({ message: 'OK', name: user.name, email: user.email });
     }
     catch (error) {
+        LogError(res, error);
     }
 };
 //# sourceMappingURL=user-controller.js.map

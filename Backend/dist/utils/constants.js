@@ -5,4 +5,8 @@ export const COOKIE_PARAMS = {
     httpOnly: true,
     signed: true
 };
+export const LogError = (res, error) => {
+    console.log(error);
+    return res.status(400).json({ message: "ERROR", cause: error.message });
+};
 //# sourceMappingURL=constants.js.map

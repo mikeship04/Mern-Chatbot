@@ -8,6 +8,7 @@ export const loginUser = async (email:string, password:string) => {
   return data
 }
 
+//figure out why we are getting undefined instead of user info
 export const checkAuthStatus = async () => {
   const res = await axios.get('/user/auth-status')
   if(res.status!== 200) throw new Error('Unable to authenticate')
