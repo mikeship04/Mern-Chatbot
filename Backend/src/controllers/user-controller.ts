@@ -95,3 +95,19 @@ export const verifyUser = async (
     LogError(res, error)
   }
 }
+
+export const userLogout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await User.findById(res.locals.jwtData.id)
+    if(!user) return res.status(401).send('User not registered')
+    if(user._id.toString()!==res.locals.jwtData.id) return res.status(401).send('permissions did not match')
+    res.clearCookie(COOKIE_NAME, COOKIE_PARAMS)
+    return res.status(200).json({message: 'Successfully logged out'})
+  } catch (error) {
+    LogError(res, error)
+  }
+}
