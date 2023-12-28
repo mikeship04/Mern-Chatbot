@@ -13,9 +13,6 @@ export const generateChatCompletion = async (
     const user = await User.findById(res.locals.jwtData.id)
     //todo refactor messages into constants for reusability
     if (!user) return res.status(401).json({ message: "User not registered" })
-    //get all user chats
-    //send all chats with new one (to keep context)
-    // get latest response
     const chats = user.chats.map(({ role, content }) => ({ role, content })) as ChatCompletionRequestMessage[]
     chats.push({ content: message, role: 'user' })
     user.chats.push({ content: message, role: 'user' })

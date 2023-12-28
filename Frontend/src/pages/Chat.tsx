@@ -3,20 +3,29 @@ import red from '@mui/material/colors/red'
 import { useAuth } from '../context/AuthContext'
 import ChatItem from '../components/chat/ChatItem';
 import { IoMdSend } from 'react-icons/io';
+import { useRef, useState } from 'react';
+import { sendChatRequest } from '../helpers/api-communicator';
 
-const chatArray = [
-  { role: "user", content: "Hello, how are you?" },
-  { role: "assistant", content: "Hi there! I'm doing well. How can I assist you today?" },
-  { role: "user", content: "I need help with my computer. It's running slow." },
-  { role: "assistant", content: "I'd be happy to help. Have you tried any troubleshooting steps so far?" },
-  { role: "user", content: "Yes, I've restarted it, but it's still slow." },
-  { role: "assistant", content: "Let's try a few more things. Have you checked for any unnecessary background processes?" },
-  { role: "user", content: "No, I haven't. How can I do that?" },
-  { role: "assistant", content: "You can open the Task Manager and look for processes using a lot of CPU or memory. Let me know what you find." },
-];
+type Message = {
+  role: "user" | "assistant"
+  content: string
+}
 
 const Chat = () => {
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const auth = useAuth()
+  const [chatMessages, setChatMessages] = useState<Message[]>([])
+  const handleSubmit = async () => {
+    const content = inputRef.current?.value as string
+    if (inputRef && inputRef.current) {
+      inputRef.current.value = ''
+    }
+    const newMessage: Message = { role: "user", content }
+    setChatMessages((prev) => [...prev, newMessage])
+
+    const chatData = await sendChatRequest(content)
+    setChatMessages([...chatData.chats])
+  }
   return (
     <Box sx={{
       display: 'flex',
@@ -118,7 +127,11 @@ const Chat = () => {
             overflowY: "auto",
             scrollBehavior: "smooth",
           }}>
-            {chatArray.map((chat, index)=><ChatItem content={chat.content} role={chat.role} key={index}/>)}
+          {chatMessages.map((chat, index) => (
+            //@ts-ignore
+            <ChatItem content={chat.content} role={chat.role} key={index} />
+          ))}
+
         </Box>
         <div style={{
           width: '100%',
@@ -129,21 +142,23 @@ const Chat = () => {
           marginRight: 'auto',
           margin: 'auto'
         }}>
-          <input type='text' style={{
-            width: '100%', 
-            backgroundColor: 'transparent', 
-            padding: '10px', 
-            border: 'none', 
-            outline: 'none', 
+          <input ref={inputRef} type='text' style={{
+            width: '100%',
+            backgroundColor: 'transparent',
+            padding: '10px',
+            border: 'none',
+            outline: 'none',
             color: 'white',
             fontSize: '20px'
-            }}></input>
-            <IconButton sx={{
+          }}></input>
+          <IconButton
+            onClick={handleSubmit}
+            sx={{
               ml: 'auto',
               color: 'white'
             }}>
-              <IoMdSend/>
-            </IconButton>
+            <IoMdSend />
+          </IconButton>
         </div>
       </Box>
     </Box>
