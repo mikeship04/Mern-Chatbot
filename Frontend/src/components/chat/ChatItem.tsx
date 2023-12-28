@@ -44,8 +44,9 @@ const ChatItem = ({
           display: 'flex',
           p: 2,
           bgcolor: '#004d5612',
-          my: 2,
-          gap: 2
+          my: 1,
+          gap: 2,
+          borderRadius: 2
         }}>
         <Avatar
           sx={{
@@ -69,8 +70,9 @@ const ChatItem = ({
           display: 'flex',
           p: 2,
           bgcolor: '#004d56',
-          my: 2,
-          gap: 2
+          my: 1,
+          gap: 2,
+          borderRadius: 2
         }}>
         <Avatar
           sx={{

@@ -81,7 +81,8 @@ const Chat = () => {
           bgcolor: 'rgb(17,29,39)',
           borderRadius: '5',
           flexDirection: 'column',
-          mx: 3
+          mx: 3,
+          marginTop: '45%'
         }}>
           <Avatar sx={{
             mx: 'auto',
@@ -166,7 +167,6 @@ const Chat = () => {
         </Box>
         <div style={{
           width: '100%',
-          padding: '20px',
           borderRadius: '8',
           backgroundColor: 'rgb(17,27,39)',
           display: 'flex',
@@ -176,7 +176,7 @@ const Chat = () => {
           <input ref={inputRef} type='text' style={{
             width: '100%',
             backgroundColor: 'transparent',
-            padding: '10px',
+            padding: '30px',
             border: 'none',
             outline: 'none',
             color: 'white',
@@ -185,7 +185,7 @@ const Chat = () => {
           <IconButton
             onClick={handleSubmit}
             sx={{
-              ml: 'auto',
+              mx: 1,
               color: 'white'
             }}>
             <IoMdSend />
